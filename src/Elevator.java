@@ -34,6 +34,8 @@ public class Elevator {
       TurnOn();
     }
 
+    // falta coisa
+
     else{
       System.out.println("andar nao disponivel");
 
