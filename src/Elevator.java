@@ -1,57 +1,63 @@
 import static java.lang.Thread.sleep;
 
+
 public class Elevator {
 
   private final int floorMin;
   private final int floorMax;
   public int curFloor = 0;
   boolean emergency = false;
-  boolean pasWaiting = false;
   boolean doorsOpen = false;
+  public int temp = 0;
+  public volatile int calls = 0;
+  public int[] floor = new int[11];
+
 
   public Elevator(int floorMin, int floorMax, int curFloor){
     this.curFloor = curFloor;
     this.floorMax = floorMax;
     this.floorMin = floorMin;
-
+    for(int i=0; i<=floor.length;i++){
+        floor[i]=-1;
+      }
   }
 
-  public int call(int num) throws InterruptedException {
+  public void call(int num, boolean up) throws InterruptedException {
     if(num>=floorMin && num<=floorMax){
-      int temp = mover(num);
-      System.out.println("open doors");
-      doorsOpen = true;
-      return temp;
-
+      calls++;
+      if(up) {
+        floor[num + 1] = 1;
+      }
+      else {
+        floor[num + 1] = -1;
+      }
+      TurnOn();
     }
+
     else{
       System.out.println("andar nao disponivel");
-      return 0;
+
     }
   }
 
-  public int travelTo(int num) throws InterruptedException{
-
-    if(num>=floorMin && num<=floorMax){
-      System.out.println("close doors");
-      doorsOpen = false;
-      int temp = mover(num);
-      System.out.println("open doors");
-      doorsOpen = true;
-      return temp;
-
+  public void TurnOn() throws InterruptedException {
+    while(calls > 0) {
+      for(int i=0; i<=floor.length;i++){
+        if(floor[i]!=0){
+          mover(i-1);
+        }
+      }
     }
-    else{
-      System.out.println("andar nao disponivel");
-      return 0;
-    }
-
   }
+
+
+
+
 
   public int mover(int num) throws InterruptedException {
     int mov = Math.abs(num - curFloor);
     boolean upElevator;
-    int temp = 0;
+    temp = 0;
 
     upElevator = num >= curFloor;
 
@@ -78,10 +84,8 @@ public class Elevator {
 
   public static void main(String[] args) throws InterruptedException {
     Elevator E1 = new Elevator(-1,9,1);
-    System.out.println(E1.call(9));
 
 
   }
-
 
 }
