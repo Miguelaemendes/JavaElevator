@@ -6,11 +6,12 @@ public class Elevator {
   private final int floorMin;
   private final int floorMax;
   public int curFloor = 0;
+  public boolean elevatorGoingUp = false;
   boolean emergency = false;
   boolean doorsOpen = false;
   public int temp = 0;
-  public volatile int calls = 0;
-  public int[] floor = new int[11];
+  public int calls = 0;
+  public int[] floor = new int[12];
 
 
   public Elevator(int floorMin, int floorMax, int curFloor){
@@ -22,7 +23,7 @@ public class Elevator {
       }
   }
 
-  public void call(int num, boolean up) throws InterruptedException {
+  public void call(int num,boolean up) throws InterruptedException {
     if(num>=floorMin && num<=floorMax){
       calls++;
       if(up) {
@@ -33,24 +34,36 @@ public class Elevator {
       }
       TurnOn();
     }
-
-    // falta coisa
-
     else{
       System.out.println("andar nao disponivel");
 
     }
   }
 
+  public void selectFloor(int goFloor){
+
+
+  }
+
   public void TurnOn() throws InterruptedException {
     while(calls > 0) {
-      for(int i=0; i<=floor.length;i++){
-        if(floor[i]!=0){
-          mover(i-1);
-        }
-      }
+      nextFloor();
     }
   }
+
+  public int nextFloor(){
+    int nextFloor = 13;
+    int comp=13;
+    for(int i=0; i<floor.length;i++) {
+      if(floor[i]!=0 && Math.abs(curFloor-i)<comp){
+        comp = Math.abs(curFloor-i);
+        nextFloor = i;
+      }
+    }
+    return nextFloor;
+  }
+
+
 
 
 
@@ -86,6 +99,9 @@ public class Elevator {
 
   public static void main(String[] args) throws InterruptedException {
     Elevator E1 = new Elevator(-1,9,1);
+    E1.call(2,true);
+    //E1.callEmergency();
+    //E1.selectFloor();
 
 
   }
