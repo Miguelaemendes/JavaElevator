@@ -1,5 +1,7 @@
 import static java.lang.Thread.sleep;
 
+import java.util.Scanner;
+
 
 public class Elevator {
 
@@ -9,9 +11,12 @@ public class Elevator {
   public boolean elevatorGoingUp = false;
   boolean emergency = false;
   boolean doorsOpen = false;
+  boolean elevatorOn = false;
+  
   public int temp = 0;
   public int calls = 0;
   public int[] floor = new int[12];
+  Scanner sFloor = new Scanner(System.in);
 
 
   public Elevator(int floorMin, int floorMax, int curFloor){
@@ -32,7 +37,8 @@ public class Elevator {
       else {
         floor[num + 1] = -1;
       }
-      TurnOn();
+      elevatorOn = true;
+      checkOn();
     }
     else{
       System.out.println("andar nao disponivel");
@@ -40,16 +46,20 @@ public class Elevator {
     }
   }
 
-  public void selectFloor(int goFloor){
 
+  public void checkOn() throws InterruptedException {
+    if (elevatorOn = false){
+      turnOn();
+    };
 
   }
-
-  public void TurnOn() throws InterruptedException {
-    while(calls > 0) {
-      nextFloor();
+  public void turnOn() throws InterruptedException {
+    while(calls>0){
+      mover(nextFloor());
     }
+
   }
+
 
   public int nextFloor(){
     int nextFloor = 13;
@@ -64,12 +74,7 @@ public class Elevator {
   }
 
 
-
-
-
-
-
-  public int mover(int num) throws InterruptedException {
+  public void mover(int num) throws InterruptedException {
     int mov = Math.abs(num - curFloor);
     boolean upElevator;
     temp = 0;
@@ -77,18 +82,29 @@ public class Elevator {
     upElevator = num >= curFloor;
 
     for(int i = 0; i<mov; i++){
+      int floorSelected = 0;
       sleep1Sec();
       temp++;
       if (upElevator){
         curFloor ++;
+        if (floor[curFloor-1] == 1){
+          doorsOpen = true;
+          System.out.println("select floor");
+          floorSelected = sFloor.nextInt();
+          if(floorSelected == curFloor){
+            System.out.println("you select the current floor");
+          }
+          if(floorSelected>curFloor){
+
+          }
+
+        }
       }
       else{
         curFloor --;
       }
       System.out.println("floor " + curFloor);
     }
-
-    return temp;
 
   }
 
